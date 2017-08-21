@@ -2,84 +2,33 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\UcenterMember;
 use think\Controller;
-use think\Request;
 
 class Base extends Controller
 {
-    /**
-     * 显示资源列表
-     *
-     * @return \think\Response
-     */
-    public function index()
-    {
-        //
-    }
+    protected $uid;
 
-    /**
-     * 显示创建资源表单页.
-     *
-     * @return \think\Response
-     */
-    public function create()
+    public function _initialize()
     {
-        //
-    }
+        if (!session('user_auth') || !session('user_auth_sign')) {
+            return $this->redirect('/');
+        }
+        $this->uid = session('user_auth')['uid'];
+        $dispatch = $this->request->dispatch();
+        $activeRouter = $dispatch['module'][0] . '/' . $dispatch['module'][1] . '/' . $dispatch['module'][2];
+        $auth = new \com\Auth();
+        if (!$auth->check($activeRouter, session('user_auth')['uid'])) {
+            return $this->error('没有权限', '/');
+        }
 
-    /**
-     * 保存新建的资源
-     *
-     * @param  \think\Request  $request
-     * @return \think\Response
-     */
-    public function save(Request $request)
-    {
-        //
-    }
+        $sidebar = session('sidebar');
+        if(!$sidebar){
+            $sidebar = UcenterMember::getSidebar($this->uid);
+            session('sidebar', $sidebar);
+        }
+        $this->assign('sidebar', $sidebar);
 
-    /**
-     * 显示指定的资源
-     *
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function read($id)
-    {
-        //
-    }
 
-    /**
-     * 显示编辑资源表单页.
-     *
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * 保存更新的资源
-     *
-     * @param  \think\Request  $request
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * 删除指定资源
-     *
-     * @param  int  $id
-     * @return \think\Response
-     */
-    public function delete($id)
-    {
-        //
     }
 }

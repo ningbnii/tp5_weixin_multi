@@ -2,10 +2,9 @@
 
 namespace app\admin\controller;
 
-use think\Controller;
 use think\Request;
 
-class Main extends Controller
+class Main extends Base
 {
     /**
      * 显示资源列表
@@ -14,7 +13,7 @@ class Main extends Controller
      */
     public function index()
     {
-        //
+        return view('index');
     }
 
     /**
