@@ -43,7 +43,7 @@ trait SoftDelete
         $model = new static();
         $field = $model->getDeleteTimeField(true);
         return $model->getQuery()
-            ->useSoftDelete($field, ['not null', '']);
+            ->useSoftDelete($field, ['neq', 0]);
     }
 
     /**
@@ -117,9 +117,9 @@ trait SoftDelete
         }
         // 恢复删除
         return $this->getQuery()
-            ->useSoftDelete($name, ['not null', ''])
+            ->useSoftDelete($name, ['neq', 0])
             ->where($where)
-            ->update([$name => null]);
+            ->update([$name => 0]);
     }
 
     /**
