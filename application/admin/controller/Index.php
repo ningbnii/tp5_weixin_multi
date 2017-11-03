@@ -16,25 +16,12 @@ class Index extends Controller
     public function index()
     {
         if ($this->request->isPost()) {
-            $username = input('username');
-            if (!$username) {
-                return $this->error('请填写用户名');
-            }
-            $password = input('password');
-            if (!$password) {
-                return $this->error('请填写密码');
-            }
-            $code = input('code');
-            if (!$code) {
-                return $this->error('请填写验证码');
-            }
-            $phrase = session('phrase');
-            session('phrase', null);
-            if ($phrase != strtolower($code)) {
-                return $this->error('验证码错误');
+            $result = $this->validate(input('post.'),'UcenterMember.login');
+            if(true !== $result){
+                return $this->error($result);
             }
 
-            $ucenterMemberData = UcenterMember::getByUsername($username);
+            $ucenterMemberData = UcenterMember::getByUsername(input('username'));
             dump($ucenterMemberData);exit;
             if ($ucenterMemberData->password != think_ucenter_encrypt($password, config('UC_AUTH_KEY'))) {
                 return $this->error('账号或密码错误！');
